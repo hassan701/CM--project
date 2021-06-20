@@ -153,7 +153,7 @@ class Graphpionts(tk.Frame):
         self.controller.refreshpage(Graphpionts)
     
     def graph(self):
-        entries.clear()
+        points.clear()
         for i in Datapionts:
             points.append(i)
         self.controller.refreshgraph()
@@ -236,7 +236,7 @@ class addpionts(tk.Frame):
         self.controller.refreshpage(addpionts)
         
     def graph(self):
-        entries.clear()
+        points.clear()
         for i in entries:
             points.append(i)
         self.controller.refreshgraph()
