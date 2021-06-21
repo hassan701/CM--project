@@ -11,12 +11,7 @@ from matplotlib.backends.backend_tkagg import (
 
 import csv
 
-entries = [[5,5],
-           [15,20], 
-    [25,14],
-    [35,32], 
-    [45,22],
-    [55,38]]
+entries = []
 
 points=[[5,5],
            [15,20], 
@@ -27,6 +22,7 @@ points=[[5,5],
 
 
 Datapionts=[]
+filename=""
 
 file=False
     
@@ -71,39 +67,61 @@ class Homepage(tk.Frame):
         tk.Frame.__init__(self,parent)
         label = ttk.Label(self, text="Home page")
         label.pack(pady=10,padx=10)
-        button1 = ttk.Button(self, text="Manula pionts", 
+        button1 = ttk.Button(self, text="Add points yourself", 
                             command= lambda: controller.show_frame(addpionts))
         
         button2 = ttk.Button(self, text="Graph from a file", 
                             command= lambda: controller.show_frame(Graphpionts))
         button1.pack()
         button2.pack()
+        ttk.Label(self, text="by Hassan Mohamed",).pack(side=tk.BOTTOM)
 
 class Graphpionts(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
         canvas = tk.Canvas(self,width=500, height=700)
+        def browsefunc():
+            
+            filename = tk.filedialog.askopenfilename()
+            Datapionts.clear()
+            with open(filename) as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=',')
+                count= 0
+                for row in csv_reader:
+                    if count == 0:
+                        count+= 1
+                    else:
+                        Datapionts.append([int(row[0]),int(row[1])])
+        
+            self.controller.refreshpage(Graphpionts)
+        
         scrollbar = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas,width=200,height=200)
+        tk.Button(scrollable_frame, text="back",height = 2, width = 5,
+                   command=lambda:controller.refreshpage(Homepage)).grid(row=0,column=0)
+        ttk.Label(scrollable_frame, text="Pionts from Graph",).grid(row=0,column=1)
         
-        ttk.Label(scrollable_frame, text="Pionts from Graph",).grid(row=0,column=2)
+        ttk.Label(scrollable_frame, text="Browser for the file:",).grid(row=1,column=0)
+        browsebutton = tk.Button(scrollable_frame, text="Browse", command=browsefunc)
+        browsebutton.grid(row =1,column=1)
         
-        ttk.Label(scrollable_frame, text = "New piont:").grid(row=1,column=0)
+        
+        ttk.Label(scrollable_frame, text = "New piont:").grid(row=2,column=0)
         x = tk.IntVar()
         y = tk.IntVar()
         
-        ttk.Label(scrollable_frame, text = "X:").grid(row=2,column=0)
-        e=tk.Entry(scrollable_frame,textvariable=x).grid(row=2,column=1)
+        ttk.Label(scrollable_frame, text = "X:").grid(row=3,column=0)
+        e=tk.Entry(scrollable_frame,textvariable=x).grid(row=3,column=1)
         
-        ttk.Label(scrollable_frame, text = "Y:").grid(row=3,column=0)
-        e=tk.Entry(scrollable_frame,textvariable=y).grid(row=3,column=1)
+        ttk.Label(scrollable_frame, text = "Y:").grid(row=4,column=0)
+        e=tk.Entry(scrollable_frame,textvariable=y).grid(row=4,column=1)
         
         Add= ttk.Button(scrollable_frame, text="ADD Piont",command=lambda:self.Addpoi(x,y))
-        Graph = ttk.Button(scrollable_frame, text="Graph pionts", command= lambda: self.graph())
-        Add.grid(row=3,column=3)
-        Graph.grid(row=3,column=4)
+        Graph = ttk.Button(scrollable_frame, text="Plot Graph", command= lambda: self.graph())
+        Add.grid(row=4,column=3)
+        Graph.grid(row=5,column=3)
         
-        ttk.Label(scrollable_frame, text = " ").grid(row=4,column=1)
+        ttk.Label(scrollable_frame, text = " ").grid(row=6,column=1)
         ttk.Label(scrollable_frame, text = "Pionts already in the array:").grid(row=7,column=1)
         self.controller = controller
         lab = ttk.Label(scrollable_frame, text="X").grid(row=8,column=0)
@@ -169,6 +187,8 @@ class addpionts(tk.Frame):
         scrollbar = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas,width=200,height=200)
         
+        tk.Button(scrollable_frame, text="back",height = 2, width = 5,
+                   command=lambda:controller.refreshpage(Homepage)).grid(row=0,column=0)
         ttk.Label(scrollable_frame, text="Pionts",).grid(row=0,column=2)
         
         ttk.Label(scrollable_frame, text = "New piont:").grid(row=1,column=0)
@@ -277,16 +297,7 @@ class Graph(tk.Frame):
         toolbar.pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
         
         
-    
-def ConfigPionts():
-    x = np.array(5, 15, 25, 35, 45, 55)
-    y = np.array(5, 20, 14, 32, 22, 38)
-    xo,yo= regresssion(x, y)
-    f = Figure(figsize=(5,5),dpi=100)
-    a = f.add_subplot(111)
-    a.plot(x,y,"ob") 
-    a.plot(xo,yo)
-    plt.show()
+
         
 def regresssion(x,y):
     n= np.size(x)
@@ -308,14 +319,6 @@ def regresssion(x,y):
       
 
 def main():  
-    with open('Datapionts.csv') as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            count= 0
-            for row in csv_reader:
-                if count == 0:
-                    count+= 1
-                else:
-                    Datapionts.append([int(row[0]),int(row[1])])
     root = Window()
     #draw_button = tk.Button(root,text="Graph", command=drawplots)
     #draw_button.pack()
