@@ -126,6 +126,7 @@ def floydWarshall(graph,src,dest, n):
     #print(dist[src][dest])
 
 def dijsktra(graph,src,dest,n):
+    #set up our empty matrix 
   inf = sys.maxsize
   node_Data = {}
   for i in range(n):
@@ -133,19 +134,28 @@ def dijsktra(graph,src,dest,n):
   node_Data[src]['cost'] = 0
   visited = []
   temp = src
+  #go through each node
   for i in range(n):
+      #check if that node has been visited
     if temp not in visited:
+        #add the noted to the visited
       visited.append(temp)
       min_heap = []
+      #go to through the nodes attached to the current node
       for j in graph[temp]:
+          #check if they have been visted
         if j not in visited:
+            #go to that node and the distance to  the total distance
           cost = node_Data[temp]['cost'] + graph[temp][j]
+          #check if the new distance is smaller than the current distance of that node
           if cost < node_Data[j]['cost']:
+              #update the distance with new smaller distance
             node_Data[j]['cost'] = cost
             node_Data[j]['pred'] = node_Data[j]['pred'] +[temp]
           heappush(min_heap,(node_Data[j]['cost'],j))
     heapify(min_heap)
     if(len(min_heap)!=0):
+        #set the new current to the new node
       temp = min_heap[0][1]
     else:
       break
@@ -156,6 +166,7 @@ def dijsktra(graph,src,dest,n):
 
 def change(graph,n):
     lis = []
+    #go through the matrix and reasing it to a new dic 
     for i in range(n):
         a = np.arange(0,n,1)
         dic = dict(zip(a,graph[i]))
@@ -173,6 +184,7 @@ totalb =[]
 totaln =[]
 totald =[]
 totalf =[]
+#loop through all the nodes sizes
 for i in nodes:
     t1=0
     t2=0
@@ -202,7 +214,7 @@ for i in nodes:
         endTime = t.time()
         t4+=(endTime-startTime)
 
-        
+    #get the avrage runtime from all 10 samples
     totalb.append(t1/10)
     totaln.append(t2/10)
     totald.append(t3/10)
