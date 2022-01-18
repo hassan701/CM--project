@@ -178,7 +178,7 @@ def change(graph,n):
 
 
 
-nodes = np.arange(1,500,100)
+nodes = np.arange(1,10,1)
 
 totalb =[]
 totaln =[]
@@ -195,7 +195,7 @@ for i in nodes:
         data = change(graph,i)
         
         startTime = t.time()
-        #Brute(graph,i)
+        Brute(graph,i)
         endTime = t.time()
         t1+=(endTime-startTime)
         
@@ -205,12 +205,12 @@ for i in nodes:
         t2+=(endTime-startTime)
         
         startTime = t.time()
-        #dijsktra(data,0,i-1,i)
+        dijsktra(data,0,i-1,i)
         endTime = t.time()
         t3+=(endTime-startTime)
         
         startTime = t.time()
-        #floydWarshall(graph,0,i-1,i)
+        floydWarshall(graph,0,i-1,i)
         endTime = t.time()
         t4+=(endTime-startTime)
 
@@ -222,13 +222,52 @@ for i in nodes:
 
 #plot the results 
 fig,(ax1, ax2)= plt.subplots(1,2)
-#ax1.plot(nodes,totalb,linestyle='--', marker='o', label='Brute Force')
+ax1.plot(nodes,totalb,linestyle='--', marker='o', label='Brute Force')
 ax1.plot(nodes,totaln,linestyle='--', marker='o',color='r', label='Nearest Neighbour')
-#ax2.plot(nodes,totald, linestyle='--', marker='o', color='g', label='Dijsktra')
-#ax2.plot(nodes,totalf, linestyle='--', marker='o', color='y', label='floydWarshall')
+ax2.plot(nodes,totald, linestyle='--', marker='o', color='g', label='Dijsktra')
+ax2.plot(nodes,totalf, linestyle='--', marker='o', color='y', label='floydWarshall')
 
 ax1.set_title("Brute Force v Nearest Neighbour")
 ax2.set_title("Dijsktra v floydWarshall")
+
+
+# rest the the varibales and test without brute force so that we can high number of nodes
+nodes = np.arange(10,200,10)
+totaln.clear()
+totald.clear()
+totalf.clear()
+for i in nodes:
+    t2=0
+    t3=0
+    t4=0
+    for j in range(10):
+        graph = Graph(i)
+        
+        startTime = t.time()
+        Nearest(graph,i)
+        endTime = t.time()
+        t2+=(endTime-startTime)
+        
+        startTime = t.time()
+        dijsktra(data,0,i-1,i)
+        endTime = t.time()
+        t3+=(endTime-startTime)
+        
+        startTime = t.time()
+        floydWarshall(graph,0,i-1,i)
+        endTime = t.time()
+        t4+=(endTime-startTime)
+        
+    totaln.append(t2/10)
+    totald.append(t3/10)
+    totalf.append(t4/10)
+    
+fig2, ax = plt.subplots(1) # two axes on figure
+ax.plot(nodes,totaln,linestyle='--', marker='o',color='r', label='Nearest Neighbour')
+
+fig3,ax2= plt.subplots(1)
+ax2.plot(nodes,totald, linestyle='--', marker='o', color='g', label='Dijsktra')
+ax2.plot(nodes,totalf, linestyle='--', marker='o', color='y', label='floydWarshall')
 
 plt.legend()
 plt.show()
